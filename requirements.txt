@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+scikit-learn
+statsmodels
+python-multipart
+streamlit
+requests
+
+# Gemini
+google-genai
+
+# Opcional – ADK (se quiser brincar com agentes depois)
+google-adk
+
+plotly
