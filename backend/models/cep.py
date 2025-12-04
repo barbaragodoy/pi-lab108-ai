@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from typing import List, Dict, Any
 from collections import defaultdict
+from datetime import datetime
 import numpy as np
 
 
@@ -45,6 +46,11 @@ def group_by_day(measurements: List[Dict[str, Any]]) -> Dict[str, List[float]]:
         ts = m.get("timestamp")
         val = m.get("value_real")
         if ts is None or val is None:
+            continue
+        # Suporta datetime object ou string ISO
+        if isinstance(ts, str):
+            ts = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+        elif not isinstance(ts, datetime):
             continue
         day = ts.date().isoformat()
         grouped[day].append(float(val))

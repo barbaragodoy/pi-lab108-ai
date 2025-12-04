@@ -1,6 +1,7 @@
 # backend/services/datastore.py
 from typing import List
 
+from sqlalchemy import delete
 from sqlmodel import Session, select
 
 from ..db import engine, Measurement, DailyCep, Alert
@@ -29,14 +30,15 @@ def get_all_measurements() -> List[Measurement]:
 
 def clear_daily_cep() -> None:
     with Session(engine) as session:
-        session.exec(select(DailyCep))  # só pra garantir metadata
-        session.query(DailyCep).delete()
+        stmt = delete(DailyCep)
+        session.exec(stmt)
         session.commit()
 
 
 def save_daily_cep(rows: List[DailyCep]) -> None:
     with Session(engine) as session:
-        session.query(DailyCep).delete()
+        stmt = delete(DailyCep)
+        session.exec(stmt)
         for r in rows:
             session.add(r)
         session.commit()

@@ -17,7 +17,7 @@ def _get_client() -> Optional["genai.Client"]:
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
         return None
-    return genai.Client()
+    return genai.Client(api_key=api_key)
 
 
 def explain_anomalies(process_context: str,

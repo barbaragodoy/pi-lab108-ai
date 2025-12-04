@@ -515,4 +515,4 @@ elif page == "🧠 Insights com IA (Gemini)":
                 answer = f"Erro ao falar com Gemini: {e}"
 
             st.session_state.chat_history.append({"role": "assistant", "content": answer})
-            st.experimental_rerun()
+            st.rerun()

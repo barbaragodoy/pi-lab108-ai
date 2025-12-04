@@ -8,6 +8,8 @@ statsmodels
 python-multipart
 streamlit
 requests
+python-dotenv
+sqlmodel
 
 # Gemini
 google-genai
