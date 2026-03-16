@@ -5,6 +5,100 @@
 
 ---
 
+## 🚀 Como rodar o projeto (passo a passo)
+
+Siga os passos abaixo para deixar o **SmartTwin CEP** rodando no seu ambiente.
+
+### 1. Pré-requisitos
+
+- **Python 3.10+** instalado ([python.org](https://www.python.org/downloads/)).
+- (Opcional) **Git**, se for clonar o repositório.
+
+### 2. Clonar e entrar na pasta do projeto
+
+```bash
+git clone <url-do-repositorio>
+cd pi-lab108-ai
+```
+
+*(Se você já tiver o código, apenas abra o terminal na pasta do projeto.)*
+
+### 3. Criar e ativar um ambiente virtual (recomendado)
+
+**Windows (PowerShell):**
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+**Windows (CMD):**
+```cmd
+python -m venv venv
+venv\Scripts\activate.bat
+```
+
+**Linux / macOS:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 4. Instalar as dependências
+
+Na raiz do projeto (com o venv ativado):
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Configurar variáveis de ambiente (opcional para IA)
+
+Para usar **insights e chat com o Gemini**, crie um arquivo `.env` na raiz do projeto:
+
+```env
+GEMINI_API_KEY=sua_chave_aqui
+```
+
+*(Ou use `GOOGLE_API_KEY` com a mesma chave.)*  
+Sem essa chave, o sistema roda normalmente; apenas as funções de explicação por LLM ficarão desabilitadas.
+
+### 6. Subir o backend (API FastAPI)
+
+No terminal, **na raiz do projeto**:
+
+```bash
+uvicorn backend.api.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+- A API ficará em: **http://localhost:8000**
+- Documentação interativa: **http://localhost:8000/docs**
+- O banco SQLite (`smarttwin.db`) é criado automaticamente na raiz ao subir a API.
+
+### 7. Subir o frontend (Streamlit)
+
+Em **outro terminal**, na raiz do projeto (com o mesmo venv ativado):
+
+```bash
+streamlit run frontend/app.py
+```
+
+- O dashboard abrirá em: **http://localhost:8501**
+
+### 8. Usar o sistema
+
+1. Acesse **http://localhost:8501** no navegador.
+2. Use o dashboard para enviar dados (upload de CSV ou simulador), ver gráficos CEP, Cp/Cpk e chat com a IA (se tiver configurado `GEMINI_API_KEY`).
+
+---
+
+| Serviço   | URL                  | Descrição        |
+|----------|----------------------|------------------|
+| Frontend | http://localhost:8501 | Dashboard Streamlit |
+| Backend  | http://localhost:8000 | API FastAPI      |
+| Docs API | http://localhost:8000/docs | Swagger UI   |
+
+---
+
 ## 🧠 Visão Geral
 
 O **SmartTwin CEP** é um sistema que combina:
