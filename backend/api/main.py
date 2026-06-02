@@ -16,6 +16,7 @@ load_dotenv()  # Agora o backend lê GEMINI_API_KEY / GOOGLE_API_KEY do .env
 
 # Imports internos do projeto
 from ..db import create_db_and_tables, Measurement, DailyCep
+from ..hardware.balanca import BalancaToledo, BalancaToledoError
 from ..models.digital_twin import DigitalTwinModel, EmaConfig
 from ..models.anomaly import AnomalyDetector, AnomalyConfig
 from ..models.sampling import SamplingEngine
@@ -175,6 +176,26 @@ def simulate_step(req: SimulateRequest):
         timestamp=req.timestamp,
         meta=None,
     )
+
+
+# --------------- LEITURA DA BALANÇA -----------------
+@app.get("/data/scale-read")
+def scale_read():
+    """Le o peso atual da balanca Toledo via serial e processa pelo pipeline."""
+    porta = os.getenv("BALANCA_PORTA", "/dev/ttyUSB0")
+    baud = int(os.getenv("BALANCA_BAUD", "9600"))
+    timeout = float(os.getenv("BALANCA_TIMEOUT", "2.0"))
+
+    try:
+        balanca = BalancaToledo(porta=porta, baud_rate=baud, timeout=timeout)
+        peso_kg = balanca.ler_peso()
+    except BalancaToledoError as e:
+        raise HTTPException(status_code=503, detail=f"Erro na balanca: {e}")
+
+    peso_gramas = peso_kg * 1000.0
+
+    result = _process_value(peso_gramas, source="scale")
+    return result
 
 
 # --------------- UPLOAD CSV -----------------
