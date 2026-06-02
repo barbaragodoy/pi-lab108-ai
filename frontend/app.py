@@ -1,4 +1,6 @@
 # frontend/app.py
+import time
+
 import requests
 import streamlit as st
 import pandas as pd
@@ -151,6 +153,40 @@ if page == "📡 Monitoramento em tempo real":
                 st.json(res)
             except Exception as e:
                 st.error(f"Erro ao simular: {e}")
+
+    # --------------- LEITURA AUTOMÁTICA DA BALANÇA ---------------
+    st.markdown("---")
+    st.subheader("⚖ Leitura automática da balança")
+
+    col_scale_ctrl, col_scale_status = st.columns([1, 1])
+
+    with col_scale_ctrl:
+        auto_read = st.checkbox("Ativar leitura automática da balança", value=False)
+        interval = st.slider("Intervalo de leitura (segundos)", 1, 10, 3)
+
+    with col_scale_status:
+        st.markdown("##### Status da conexão")
+        try:
+            _ = fetch_json("/health")
+            st.success("Backend online — balança pronta para leitura")
+        except Exception:
+            st.error("Backend offline — verifique a conexão")
+
+    if auto_read:
+        placeholder = st.empty()
+        stop_btn = st.button("⏹ Parar leitura")
+        if stop_btn:
+            st.info("Leitura interrompida pelo usuário.")
+        else:
+            while True:
+                try:
+                    res = fetch_json("/data/scale-read", method="GET")
+                    with placeholder.container():
+                        st.metric("Peso da balança (g)", f"{res['value_real']:.3f}")
+                        st.json(res)
+                except Exception as e:
+                    placeholder.error(f"Erro na leitura: {e}")
+                time.sleep(interval)
 
     st.markdown("---")
     st.subheader("📡 Visão geral do comportamento")

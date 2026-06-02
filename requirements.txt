@@ -18,3 +18,9 @@ google-genai
 google-adk
 
 plotly
+
+# PostgreSQL
+psycopg2-binary>=2.9.9
+
+# Balança Toledo (serial)
+pyserial>=3.5
